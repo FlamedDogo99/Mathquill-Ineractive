@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Mathquill</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathquill@0.10.1-a/build/mathquill.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/mathquill@0.10.1-a/build/mathquill.min.css" rel="stylesheet">
+  <style>
+    .mq-line-break {
+      display: block;
+      height: 0.3em; /* Adjust the height as needed */
+      content: '';
+    }
+    body {
+      margin: 0px;
+    }
+  </style>
+</head>
+<body>
+    <p>Mathquill:</p>
+    <div id="math-field" style="margin: 0px; padding: 4px; width: 100vw;"></div>
+    <div>
+        LaTeX Output:<br>
+        <textarea id="latex-output" style="width: 100vw; padding: 4px;"></textarea>
+    </div>
+    <script>
+const TAB_KEYCODE = 9;
+const ENTER_KEYCODE = 13;
+const SHIFT_KEYCODE = 16;
+const CTRL_KEYCODE = 17;
+const ALT_KEYCODE = 18;
+const CAPSLOCK_KEYCODE = 20;
+const ESCAPE_KEYCODE = 27;
+const PAGEUP_KEYCODE = 33;
+const PAGEDOWN_KEYCODE = 34;
+const END_KEYCODE = 35;
+const HOME_KEYCODE = 36;
+const LEFTARROW_KEYCODE = 37;
+const UPARROW_KEYCODE = 38;
+const RIGHTARROW_KEYCODE = 39;
+const DOWNARROW_KEYCODE = 40;
+const V_KEYCODE = 86;
+const Y_KEYCODE = 89;
+const Z_KEYCODE = 90;
+const ALTGR_KEYCODE = 225;
+
+const unaffectingKeys = [TAB_KEYCODE,
+                        ENTER_KEYCODE,
+                        SHIFT_KEYCODE,
+                        CTRL_KEYCODE,
+                        ALT_KEYCODE,
+                        CAPSLOCK_KEYCODE,
+                        ESCAPE_KEYCODE,
+                        LEFTARROW_KEYCODE,
+                        PAGEUP_KEYCODE,
+                        PAGEDOWN_KEYCODE,
+                        END_KEYCODE,
+                        HOME_KEYCODE,
+                        LEFTARROW_KEYCODE,
+                        UPARROW_KEYCODE,
+                        RIGHTARROW_KEYCODE,
+                        DOWNARROW_KEYCODE,
+                        ALTGR_KEYCODE];
+
+function UndoRedoManager(pMathField, pElement) {
+    this.mathField = pMathField;
+    this.contentEl = pElement;
+    this.typedHistory = [this.mathField.latex()];
+    this.ctrlIsDown = false;
+    this.YIsDown = false;
+    this.ZIsDown = false;
+    this.currentState = 0;
+    this.buffSize = 50;
+
+    this.rearrangeTypedArray = () => {
+        if (this.typedHistory.length > this.buffSize) {
+            let sizeOverflow = this.typedHistory.length - this.buffSize;
+            this.currentState = this.currentState - sizeOverflow;
+            this.typedHistory = this.typedHistory.slice(this.buffSize * (-1));
+        }
+    };
+
+    this.isKeyIsUnaffecting = (pKey) => {
+        return unaffectingKeys.includes(pKey);
+    };
+
+    this.checkIfSpecialKeysAreUpAndSetStates = (e) => {
+      this.ctrlIsDown = (e.metaKey || e.ctrlKey);
+      const zPressed = (e.key == 'z' || e.which == Z_KEYCODE || e.keyCode == Z_KEYCODE)
+      this.ZIsDown = zPressed && !e.shiftKey
+      this.YIsDown = zPressed && e.shiftKey
+    }
+
+    this.checkIfSpecialKeysAreDownAndSetStates = (e) => {
+      this.ctrlIsDown = (e.metaKey === true || e.ctrlKey === true);
+      const zPressed = (e.key == 'z' || e.which == Z_KEYCODE || e.keyCode == Z_KEYCODE)
+      this.ZIsDown = zPressed && (e.shiftKey === false)
+      this.YIsDown = zPressed && (e.shiftKey === true)
+    }
+
+    this.saveState = () => {
+        if (this.currentState !== (this.typedHistory.length - 1)) {
+            this.typedHistory = this.typedHistory.slice(0, (this.currentState + 1));
+        }   
+        
+        this.typedHistory.push(this.mathField.latex());
+        this.rearrangeTypedArray();
+        this.currentState++;
+    };
+
+    this.undo = () => {
+        if (this.currentState !== 0) {
+            this.currentState--;
+            let updatedText = this.typedHistory[this.currentState];
+            updatedText = updatedText.replace(/\\\\/g, '\\embed{linebreak}');
+            this.mathField.latex(updatedText);
+            this.mathField.focus()
+        }  else {
+            //console.log('do nothing');
+        }
+    };
+
+    this.redo = () => {
+        if (this.currentState < (this.typedHistory.length - 1)) {
+            this.currentState++;
+            let updatedText = this.typedHistory[this.currentState];
+            updatedText = updatedText.replace(/\\\\/g, '\\embed{linebreak}');
+            this.mathField.latex(updatedText);
+            this.mathField.focus()
+        } else {
+            //console.log('do nothing');
+        }
+    };
+
+    this.contentEl.on('keyup', (e) => {
+        this.checkIfSpecialKeysAreUpAndSetStates(e);
+        
+        //log in typedHistory
+        if ((this.isKeyIsUnaffecting(e.which) === false)
+            && (this.ctrlIsDown === false || (this.ctrlIsDown && e.which === V_KEYCODE))) {
+            this.saveState();
+        }
+    });
+
+    this.contentEl.on('keydown', (e) => {
+        this.checkIfSpecialKeysAreDownAndSetStates(e);
+        //ctrl+z
+        if (this.ctrlIsDown && this.ZIsDown) {
+            this.undo();
+        }
+
+        //ctrl + y
+        if (this.ctrlIsDown && this.YIsDown) {
+            this.redo();
+        }
+    });
+}
+
+    </script>
+    <script>
+          const L = 'left';
+          const R = 'right';
+
+      const MQ = MathQuill.getInterface(2);
+
+      function setupMathField() {
+        MQ.registerEmbed('linebreak', function() {
+          const node = document.createElement('span');
+          node.className = 'mq-line-break';
+          return {
+            htmlString: node.outerHTML,
+            text: function() {
+            return '\\\\';
+          },
+            latex: function() {
+              return '\\\\';
+            }
+          };
+        });
+        mathFieldEl = $('#math-field');
+        const mathField = MQ.MathField(document.getElementById('math-field'), {
+          spaceBehavesLikeTab: false,
+          handlers: {
+            edit: function() {
+              let enteredMath = mathField.latex();
+              enteredMath = enteredMath.replace(/\\embed{linebreak}/g, '\\\\');
+              document.getElementById('latex-output').value = enteredMath;
+            }
+          }
+        });
+        undoManager = new UndoRedoManager(mathField, mathFieldEl);
+
+        document.getElementById('math-field').addEventListener('keydown', function(event) {
+          if (event.key === 'Enter') {
+            event.preventDefault();
+            mathField.write('\\embed{linebreak}');
+            let enteredMath = mathField.latex();
+            enteredMath = enteredMath.replace(/\\embed{linebreak}/g, '\\\\');
+            document.getElementById('latex-output').value = enteredMath;
+          } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            event.preventDefault();
+            moveCursorManually(mathField, event.key === 'ArrowUp' ? 'up' : 'down');
+          }
+        });
+
+        document.getElementById('math-field').addEventListener('paste', function(event) {
+          event.preventDefault();
+          event.stopPropagation();
+          let paste = (event.clipboardData || window.clipboardData).getData('Text');
+          paste = paste.replace(/\\\\/g, '\\embed{linebreak}');
+          mathField.latex(paste);
+          let enteredMath = mathField.latex();
+          enteredMath = enteredMath.replace(/\\embed{linebreak}/g, '\\\\');
+          document.getElementById('latex-output').value = enteredMath;
+        });
+
+        return mathField;
+      }
+      latexSource = $('#latex-output'),
+      latexSource.bind('keydown paste', function() {
+        var oldtext = latexSource.val();
+        setTimeout(function() {
+          var newtext = latexSource.val();
+          if(newtext !== oldtext && newtext) {
+            newtext = newtext.replace(/\\\\/g, '\\embed{linebreak}');
+            mathField.latex(newtext);
+            undoManager.saveState()
+          }
+        });
+      });
+
+      function moveCursorManually(mathField, direction) {
+        const cursor = mathField.__controller.cursor;
+
+        let currentLine = getCurrentLine(cursor);
+        let targetLine = direction === 'up' ? currentLine - 1 : currentLine + 1;
+        let currentPos = getCursorPosInLine(cursor);
+        let targetNode = getLineNode(cursor, currentLine, targetLine, direction);
+
+        if (targetNode) {
+          moveToClosestPosition(cursor, targetLine, targetNode, currentPos, direction);
+        }
+      }
+
+      function getCurrentLine(cursor) {
+        let line = 0;
+        let node = cursor[MQ.L];
+        while (node) {
+          if (node.jQ && node.jQ.hasClass('mq-line-break')) {
+            line++;
+          }
+          node = node[MQ.L];
+        }
+        return line;
+      }
+
+      function getCursorPosInLine(cursor) {
+        let pos = 0;
+        let node = cursor[MQ.L];
+        while (node) {
+          if (node.jQ && node.jQ.hasClass('mq-line-break')) {
+            break;
+          }
+          pos++;
+          node = node[MQ.L];
+        }
+        return pos;
+      }
+
+      function getLineNode(cursor, currentLine, targetLine, direction) {
+        let line = currentLine;
+
+        if (direction == 'up') {
+          var node = cursor[MQ.L];
+          while (node) {
+            if (node.jQ && node.jQ.hasClass('mq-line-break')) {
+              node = node[MQ.L];
+              line--;
+            }
+            if (targetLine == line) {
+              return node[MQ.L];
+            }
+            node = node[MQ.L];
+          }
+          return null;
+
+        } else {
+          var node = cursor[MQ.R];
+          while (node) {
+            if (node.jQ && node.jQ.hasClass('mq-line-break')) {
+              node = node[MQ.R];
+              line++;
+            }
+            if (targetLine == line) {
+              return node;
+            }
+            node = node[MQ.R];
+          }
+          return null;
+        }
+      }
+
+      function moveToClosestPosition(cursor, targetLine, targetNode, currentPos, direction) {
+        cursor.insRightOf(targetNode);
+        let pos = getCursorPosInLine(cursor);
+
+        if (currentPos < pos) {
+          let cnt = pos - currentPos;
+          let node = targetNode;
+          for (let i = 0; i < cnt; i++) {
+            var tmpNode = node[MQ.L];
+            if (!tmpNode) {
+              break;
+            }
+            if (tmpNode.jQ && tmpNode.jQ.hasClass('mq-line-break')) {
+              node = tmpNode;
+              break;
+            }
+            node = tmpNode;
+          }
+          if (direction == "up" && targetLine == 0 && currentPos == 0) {
+            while (cursor[MQ.L]) {
+              cursor.insLeftOf(cursor[MQ.L]);
+            }
+          } else {
+            cursor.insRightOf(node);
+          }
+
+        } else if (currentPos > pos) {
+          let cnt = currentPos - pos;
+          let node = targetNode;
+          for (let i = 0; i < cnt; i++) {
+          var tmpNode = node[MQ.R];
+          if (!tmpNode) break;
+            if (tmpNode.jQ && tmpNode.jQ.hasClass('mq-line-break')) {
+              break;
+            }
+            node = tmpNode;
+          }
+          cursor.insRightOf(node);
+        }
+
+        cursor.show();
+        }
+        const mathField = setupMathField();
+      </script>
+</body>
+</html>
