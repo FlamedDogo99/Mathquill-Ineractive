@@ -13,7 +13,7 @@
   <title>Mathquill</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathquill@0.10.1-a/build/mathquill.min.js"></script>
-	<link href="https://cdn.jsdelivr.net/npm/mathquill@0.10.1-a/build/mathquill.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/mathquill@0.10.1-a/build/mathquill.min.css" rel="stylesheet">
   <style>
     .mq-line-break {
       display: block;
@@ -227,18 +227,18 @@ function UndoRedoManager(pMathField, pElement) {
 
         return mathField;
       }
-      latexSource = $('#latex-output'),
-      latexSource.bind('keydown paste', function() {
-        var oldtext = latexSource.val();
-        setTimeout(function() {
-          var newtext = latexSource.val();
-          if(newtext !== oldtext && newtext) {
-            newtext = newtext.replace(/\\\\/g, '\\embed{linebreak}');
-            mathField.latex(newtext);
-            undoManager.saveState()
-          }
-        });
-      });
+      latexSource = document.getElementById("latex-output")
+
+      function sourceHandler(event) {
+        console.log(event, this);
+        let newtext = this.value
+        if(newtext) {
+          newtext = newtext.replace(/\\\\/g, '\\embed{linebreak}');
+          mathField.latex(newtext);
+          undoManager.saveState()
+        }
+      }
+      latexSource.addEventListener("input", sourceHandler, false);
 
       function moveCursorManually(mathField, direction) {
         const cursor = mathField.__controller.cursor;
