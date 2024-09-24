@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2, minimum-scale=1,user-scalable=yes">
   <link rel="apple-touch-icon" href="icon.png">
@@ -26,6 +27,8 @@
 </head>
 <body>
     <p>Mathquill:</p>
+    <a href="#" onclick="(function(){undoManager.undo();return false;})();return false;">Undo</a>
+    <a href="#" onclick="(function(){undoManager.redo();return false;})();return false;">Redo</a>
     <div id="math-field" style="margin: 0px; padding: 4px; width: 100vw;"></div>
     <div>
         LaTeX Output:<br>
