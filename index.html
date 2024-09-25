@@ -12,8 +12,8 @@
 
   <title>Mathquill</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathquill@0.10.1-a/build/mathquill.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/mathquill@0.10.1-a/build/mathquill.min.css" rel="stylesheet">
+  <script src="mathquill.min.js"></script>
+  <link href="mathquill.css" rel="stylesheet">
   <style>
     .mq-line-break {
       display: block;
@@ -27,13 +27,136 @@
 </head>
 <body>
     <p>Mathquill:</p>
-    <a href="#" onclick="(function(){undoManager.undo();return false;})();return false;">Undo</a>
-    <a href="#" onclick="(function(){undoManager.redo();return false;})();return false;">Redo</a>
-    <div id="math-field" style="margin: 0px; padding: 4px; width: 100vw;"></div>
+    <a id="undo" href="#">Undo</a>
+    <a id="redo" href="#">Redo</a>
+    <a id="copy" href="#">Copy</a>
+    <a id="paste" href="#">Paste</a>
+
+    <input id="copyField" contenteditable="true" style="position:absolute;z-index:-10;font-size:20px;color: transparent;text-shadow: 0 0 0 black;opacity:0;">
+    <span id="math-field" style="margin: 0px; padding: 4px; width: 100vw;-webkit-touch-callout:none;-ms-touch-action: none;touch-action: none;"></span>
     <div>
         LaTeX Output:<br>
         <textarea id="latex-output" style="width: 100vw; padding: 4px;"></textarea>
     </div>
+    <script>
+      let undoButton = document.getElementById('undo');
+      let redoButton = document.getElementById('redo');
+      let copyButton = document.getElementById('copy');
+      let pasteButton = document.getElementById('paste');
+
+      undoButton.addEventListener("mousedown", undoText, false);
+      undoButton.addEventListener("touchstart", undoText, false);
+      redoButton.addEventListener("mousedown", redoText, false);
+      redoButton.addEventListener("touchstart", redoText, false);
+      copyButton.addEventListener("mousedown", copyText, false);
+      copyButton.addEventListener("touchstart", copyText, false);
+      pasteButton.addEventListener("mousedown", pasteText, false);
+      pasteButton.addEventListener("touchstart", pasteText, false);
+      function undoText(e) {
+        e.preventDefault();
+        undoManager.undo()
+        return false;
+      }
+
+      function redoText(e) {
+        e.preventDefault();
+        undoManager.redo()
+        return false;
+      }
+      function copyText(e) {
+        e.preventDefault();
+        if (mathField.__controller.cursor.selection) {
+          copyField = document.getElementById('copyField');
+          copyField.value = mathField.__controller.cursor.selection.join('latex');
+          copyField.select(); 
+          copyField.setSelectionRange(0,99999);
+          document.execCommand('copy');
+          navigator.clipboard.writeText(copyField.value);
+          mathField.focus();
+        }
+        return false;
+      }
+      function pasteText(e) {
+        e.preventDefault()
+
+        navigator.clipboard.readText().then(text => {
+          const transfer = new window.DataTransfer();
+          transfer.setData('text/plain', text);
+          document.activeElement.dispatchEvent(new ClipboardEvent('paste', {
+            bubbles: true,
+            cancelable: true,
+            clipboardData: transfer
+          }));
+
+        });
+        return false;
+      }
+
+
+      function TouchEventMapper(originalEvent) {
+        let Target = originalEvent.target
+        let simulatedEventType
+        switch (originalEvent.type) {
+          case "touchstart":
+            simulatedEventType = "mousedown"
+            break
+          case "touchmove":
+            simulatedEventType = "mousemove"
+            break
+          case "touchend":
+            simulatedEventType = "mouseup"
+            break
+          case "touchcancel":
+            simulatedEventType = "mouseup"
+            break
+          default:
+            return
+        }
+
+        let firstTouch = originalEvent.changedTouches[0]
+
+        let clientX = firstTouch.clientX,
+          pageX = firstTouch.pageX,
+          PageXOffset = window.pageXOffset
+        let clientY = firstTouch.clientY,
+          pageY = firstTouch.pageY,
+          PageYOffset = window.pageYOffset
+        if (
+          (pageX === 0 && Math.floor(clientX) > Math.floor(pageX)) ||
+          (pageY === 0 && Math.floor(clientY) > Math.floor(pageY))
+        ) {
+          clientX -= PageXOffset
+          clientY -= PageYOffset
+        } else if (clientX < pageX - PageXOffset || clientY < pageY - PageYOffset) {
+          clientX = pageX - PageXOffset
+          clientY = pageY - PageYOffset
+        }
+
+        let simulatedEvent = new MouseEvent(simulatedEventType, {
+          bubbles: true,
+          cancelable: true,
+          screenX: firstTouch.screenX,
+          screenY: firstTouch.screenY,
+          clientX: firstTouch.clientX,
+          clientY: firstTouch.clientY,
+          pageX: firstTouch.pageX,
+          pageY: firstTouch.pageU,
+          buttons: 1,
+          button: 0,
+          ctrlKey: originalEvent.ctrlKey,
+          shiftKey: originalEvent.shiftKey,
+          altKey: originalEvent.altKey,
+          metaKey: originalEvent.metaKey
+        })
+
+        this.dispatchEvent(simulatedEvent)
+      }
+
+      document.querySelector('#math-field').addEventListener("touchstart", TouchEventMapper, true)
+      document.addEventListener("touchmove", TouchEventMapper, true)
+      document.addEventListener("touchend", TouchEventMapper, true)
+      document.addEventListener("touchcancel", TouchEventMapper, true)
+    </script>
     <script>
 const TAB_KEYCODE = 9;
 const ENTER_KEYCODE = 13;
@@ -214,23 +337,24 @@ function UndoRedoManager(pMathField, pElement) {
           }
         });
 
-        document.getElementById('math-field').addEventListener('paste', function(event) {
-          event.preventDefault();
-          event.stopPropagation();
-          let paste = (event.clipboardData || window.clipboardData).getData('Text');
-          paste = paste.replace(/\\\\/g, '\\embed{linebreak}');
-          mathField.latex(paste);
-          let enteredMath = mathField.latex();
-          enteredMath = enteredMath.replace(/\\embed{linebreak}/g, '\\\\');
-          document.getElementById('latex-output').value = enteredMath;
-        });
-
+        document.getElementById('math-field').addEventListener('paste', mathPaste, false);
         return mathField;
       }
       latexSource = document.getElementById("latex-output")
+      function mathPaste(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        let paste = (event.clipboardData || window.clipboardData).getData('Text');
+        paste = paste.replace(/\\\\/g, '\\embed{linebreak}');
+        mathField.__controller.cursor.deleteSelection();
+        mathField.write(paste);
+        mathField.__controller.textarea[0].value = '' // For some damn reason, this little shit stores the value of the text selection, and reappends it after we paste it. We don't want that
+        let enteredMath = mathField.latex();
+        enteredMath = enteredMath.replace(/\\embed{linebreak}/g, '\\\\');
+        document.getElementById('latex-output').value = enteredMath;
+      }
 
       function sourceHandler(event) {
-        console.log(event, this);
         let newtext = this.value
         if(newtext) {
           newtext = newtext.replace(/\\\\/g, '\\embed{linebreak}');
