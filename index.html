@@ -314,6 +314,7 @@ function UndoRedoManager(pMathField, pElement) {
         mathFieldEl = $('#math-field');
         const mathField = MQ.MathField(document.getElementById('math-field'), {
           spaceBehavesLikeTab: false,
+          restrictMismatchedBrackets: false,
           handlers: {
             edit: function() {
               let enteredMath = mathField.latex();
