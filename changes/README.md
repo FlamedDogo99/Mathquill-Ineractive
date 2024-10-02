@@ -5,3 +5,4 @@
    - Added matrix support but it is _god awful_
         - Abuses stacked superscripts and subscripts and uses the `prompt()` function for setting the size of the matrix 
         - I would be ashamed if someone should this to me later in life. It is the laziest, mostly poorly executed way to go about this.
+        - `\matrix` `\pmatrix` `\bmatrix` `\Bmatrix` `\vmatrix` and `\Vmatrix`
