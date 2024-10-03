@@ -1,8 +1,16 @@
 ## This is a record of the changes implemented in this build of mathquill.min.js 
 - `src/commands/text.ts` 
-    - Re-added creating text box through `$`
+    - Re-added creating a text box through `$`
+- `src/commands/math/commands.ts`
+   - Added support for parsing latex environments
+   - Added matrix and cases support
+        - `\matrix`, `\pmatrix`, `\bmatrix`, `\Bmatrix`, `\vmatrix`, `\Vmatrix`, and `\cases`
+- `src/css/math.less`
+   - Added matrix css
+- `src/publicapi.ts`
+   - Extended `klass` to accept Environments
+- `src/commands/math/LatexCommandInput.ts`
+   - Extended `cmd` to accept Environments
 - `src/commands/math/basicSymbols.ts`
-   - Added matrix support but it is _god awful_
-        - Abuses stacked superscripts and subscripts and uses the `prompt()` function for setting the size of the matrix 
-        - I would be ashamed if someone should this to me later in life. It is the laziest, mostly poorly executed way to go about this.
-        - `\matrix` `\pmatrix` `\bmatrix` `\Bmatrix` `\vmatrix` and `\Vmatrix`
+   - Renamed the legacy matrix support from previous build
+        - `\fmatrix`, `\fpmatrix`, `\fbmatrix`, `\fBmatrix`, `\fvmatrix`, and `\fVmatrix`
