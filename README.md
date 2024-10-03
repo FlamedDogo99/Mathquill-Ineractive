@@ -23,6 +23,8 @@
 - [Undo History](https://github.com/mathquill/mathquill/issues/5)
 - [Multiline](https://edu-mat.sakuraweb.com/matheditor/MathQuillWithLineBreaks.html)
 - [Latex Edit Binding](https://digabi.github.io/mathquill/test/demo.html)
+- [Original (obsolete) Learnosity matrix branch](https://github.com/Learnosity/mathquill/tree/matrix-minimal)
+- [My rewrite of the Learnosity matrix branch](https://github.com/FlamedDogo99/mathquill)
 
 ## License
 None
