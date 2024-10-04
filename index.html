@@ -315,7 +315,7 @@ function UndoRedoManager(pMathField, pElement) {
         const mathField = MQ.MathField(document.getElementById('math-field'), {
           spaceBehavesLikeTab: false,
           restrictMismatchedBrackets: false,
-          autoCommands: 'ans alpha beta cbrt frac infinity int infty integral nthroot percent phi pi prod rho sum sqrt tau theta',
+          autoCommands: 'alpha beta sqrt theta phi rho pi tau nthroot cbrt sum prod integral percent infinity infty cross ans frac int gamma Gamma delta Delta epsilon zeta eta Theta iota kappa lambda Lambda mu Xi xi Pi sigma Sigma upsilon Upsilon Phi chi psi Psi omega Omega',
           charsThatBreakOutOfSupSub: '',
           handlers: {
             edit: function() {
