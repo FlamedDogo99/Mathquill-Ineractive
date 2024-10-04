@@ -10,6 +10,7 @@
    - `\matrix`, `\pmatrix`, `\bmatrix`, `\Bmatrix`, `\vmatrix`, `\Vmatrix`
 - Cases support
    - `\cases`
+- Adds `mod` to autocommands
 - Legacy fake matrix command
    - Abuses `_{}` and `^{}` to visually recreate matrices
    - Viewable on unmodified builds of mathquill
@@ -17,7 +18,8 @@
 - Undo and Redo handling
    - <kbd>Command Z</kbd>, <kbd>Control Z</kbd> or pressing `undo` undoes the previous action
    - <kbd>Command Shift Z</kbd>, <kbd>Control Shift Z</kbd> or pressing `redo` redoes the previous action
-
+- Newline functionality
+   - Pressing <kbd>return</kbd> will enter a new line, which is represented by latex's `\newline` character
 ## Credit
 - [Mathquill](https://github.com/mathquill/mathquill)
 - [Undo History](https://github.com/mathquill/mathquill/issues/5)

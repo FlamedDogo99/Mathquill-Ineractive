@@ -52,4 +52,8 @@ LatexCmds['vmatrix'] = () => new MatrixHack('\\left|', '\\right|');
 LatexCmds['Vmatrix'] = () => new MatrixHack('\\left\\lVert', '\\right\\rVert');
 
 
-// Yikes
+// Replaces line 576
+var mostOps = (
+    'arg deg det dim exp gcd hom inf ker lg lim ln log max min mod sup' +
+    ' limsup liminf injlim projlim Pr'
+  ).split(' ');

@@ -14,3 +14,4 @@
 - `src/commands/math/basicSymbols.ts`
    - Renamed the legacy matrix support from previous build
         - `\fmatrix`, `\fpmatrix`, `\fbmatrix`, `\fBmatrix`, `\fvmatrix`, and `\fVmatrix`
+   - Added `mod` to autocommands

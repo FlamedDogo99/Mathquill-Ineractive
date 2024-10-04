@@ -246,7 +246,7 @@ function UndoRedoManager(pMathField, pElement) {
         if (this.currentState !== 0) {
             this.currentState--;
             let updatedText = this.typedHistory[this.currentState];
-            updatedText = updatedText.replace(/\\\\/g, '\\embed{linebreak}');
+            updatedText = updatedText.replace(/\\newline/g, '\\embed{linebreak}');
             this.mathField.latex(updatedText);
             this.mathField.focus()
         }  else {
@@ -258,7 +258,7 @@ function UndoRedoManager(pMathField, pElement) {
         if (this.currentState < (this.typedHistory.length - 1)) {
             this.currentState++;
             let updatedText = this.typedHistory[this.currentState];
-            updatedText = updatedText.replace(/\\\\/g, '\\embed{linebreak}');
+            updatedText = updatedText.replace(/\\newline/g, '\\embed{linebreak}');
             this.mathField.latex(updatedText);
             this.mathField.focus()
         } else {
@@ -304,10 +304,10 @@ function UndoRedoManager(pMathField, pElement) {
           return {
             htmlString: node.outerHTML,
             text: function() {
-            return '\\\\';
+            return '\\newline';
           },
             latex: function() {
-              return '\\\\';
+              return '\\newline';
             }
           };
         });
@@ -315,10 +315,12 @@ function UndoRedoManager(pMathField, pElement) {
         const mathField = MQ.MathField(document.getElementById('math-field'), {
           spaceBehavesLikeTab: false,
           restrictMismatchedBrackets: false,
+          autoCommands: 'ans alpha beta cbrt frac infinity int infty integral nthroot percent phi pi prod rho sum sqrt tau theta',
+          charsThatBreakOutOfSupSub: '',
           handlers: {
             edit: function() {
               let enteredMath = mathField.latex();
-              enteredMath = enteredMath.replace(/\\embed{linebreak}/g, '\\\\');
+              enteredMath = enteredMath.replace(/\\embed{linebreak}/g, '\\newline');
               document.getElementById('latex-output').value = enteredMath;
             }
           }
@@ -330,7 +332,7 @@ function UndoRedoManager(pMathField, pElement) {
             event.preventDefault();
             mathField.write('\\embed{linebreak}');
             let enteredMath = mathField.latex();
-            enteredMath = enteredMath.replace(/\\embed{linebreak}/g, '\\\\');
+            enteredMath = enteredMath.replace(/\\embed{linebreak}/g, '\\newline');
             document.getElementById('latex-output').value = enteredMath;
           } else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
             event.preventDefault();
@@ -346,19 +348,19 @@ function UndoRedoManager(pMathField, pElement) {
         event.preventDefault();
         event.stopPropagation();
         let paste = (event.clipboardData || window.clipboardData).getData('Text');
-        paste = paste.replace(/\\\\/g, '\\embed{linebreak}');
+        paste = paste.replace(/\\newline/g, '\\embed{linebreak}');
         mathField.__controller.cursor.deleteSelection();
         mathField.write(paste);
         mathField.__controller.textarea[0].value = '' // For some damn reason, this little shit stores the value of the text selection, and reappends it after we paste it. We don't want that
         let enteredMath = mathField.latex();
-        enteredMath = enteredMath.replace(/\\embed{linebreak}/g, '\\\\');
+        enteredMath = enteredMath.replace(/\\embed{linebreak}/g, '\\newline');
         document.getElementById('latex-output').value = enteredMath;
       }
 
       function sourceHandler(event) {
         let newtext = this.value
         if(newtext) {
-          newtext = newtext.replace(/\\\\/g, '\\embed{linebreak}');
+          newtext = newtext.replace(/\\newline/g, '\\embed{linebreak}');
           mathField.latex(newtext);
           undoManager.saveState()
         }
