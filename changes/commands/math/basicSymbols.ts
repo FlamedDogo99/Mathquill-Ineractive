@@ -57,3 +57,10 @@ var mostOps = (
     'arg deg det dim exp gcd hom inf ker lg lim ln log max min mod sup' +
     ' limsup liminf injlim projlim Pr'
   ).split(' ');
+
+// Appended to line 736
+
+LatexCmds['∤'] = 
+  LatexCmds.nmid =
+  LatexCmds.notmid =
+  bindVanillaSymbol('\\nmid ', '&#8740;', 'does not divide');

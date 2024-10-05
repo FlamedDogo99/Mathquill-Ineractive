@@ -15,6 +15,6 @@
    - Renamed the legacy matrix support from previous build
         - `\fmatrix`, `\fpmatrix`, `\fbmatrix`, `\fBmatrix`, `\fvmatrix`, and `\fVmatrix`
    - Added `mod` to autocommands
+   - Added `\nmid` as bindVanillaSymbol
 - `src/commands/math/advancedSymbols.ts`
-   - Added `nequiv` as a binary operator
-   - Added `nmid` as a binary operator
+   - Added `\nequiv` as a binary operator
