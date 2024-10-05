@@ -11,6 +11,7 @@
 - Cases support
    - `\cases`
 - Adds `mod` to autocommands
+- Adds `\nequiv` as a binary operator
 - Legacy fake matrix command
    - Abuses `_{}` and `^{}` to visually recreate matrices
    - Viewable on unmodified builds of mathquill
