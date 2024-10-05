@@ -17,3 +17,4 @@
    - Added `mod` to autocommands
 - `src/commands/math/advancedSymbols.ts`
    - Added `nequiv` as a binary operator
+   - Added `nmid` as a binary operator
