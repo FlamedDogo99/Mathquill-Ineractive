@@ -562,3 +562,16 @@ html body .mq-editable-field .mq-selection .mq-nthroot-container * {
   height: 1px;
   box-sizing: content-box;
 }
+
+/*
+ * New line
+ */
+
+.mq-line-break {
+  display: block;
+  height: 0.3em; /* Adjust the height as needed */
+  content: '';
+}
+body {
+  margin: 0px;
+}

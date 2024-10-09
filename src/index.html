@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="manifest" href="manifest.json">
+
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="application-name" content="Mathquill">
+  <meta name="apple-mobile-web-app-title" content="Mathquill">
+  <meta name="theme-color" content="#87CEFA">
+  <meta name="msapplication-navbutton-color" content="#87CEFA">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="msapplication-starturl" content="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="icon" sizes="512x512" href="/images/icon.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="/images/icon.png">
+
+  <title>Mathquill</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  <script src="/js/mathquill.min.js"></script>
+  <link href="/css/mathquill.css" rel="stylesheet">
+</head>
+<body>
+  <p>Mathquill:</p>
+  <a id="undo" href="#">Undo</a>
+  <a id="redo" href="#">Redo</a>
+  <a id="copy" href="#">Copy</a>
+  <a id="paste" href="#">Paste</a>
+
+  <input id="copyField" contenteditable="true" style="position:absolute;z-index:-10;font-size:20px;color: transparent;text-shadow: 0 0 0 black;opacity:0;">
+  <span id="math-field" style="margin: 0px; padding: 4px; width: 100vw;-webkit-touch-callout:none;-ms-touch-action: none;touch-action: none;"></span>
+  <div>
+    LaTeX Output:<br>
+    <textarea id="latex-output" style="width: 100vw; padding: 4px;"></textarea>
+  </div>
+  <script src="/js/extension.min.js"></script>
+</body>
+</html>
