@@ -2,42 +2,28 @@
       let redoButton = document.getElementById('redo');
       let copyButton = document.getElementById('copy');
       let pasteButton = document.getElementById('paste');
+      undoButton.addEventListener("pointerdown", preventButton, false);
+      redoButton.addEventListener("pointerdown", preventButton, false);
+      copyButton.addEventListener("pointerdown", preventButton, false);
+      pasteButton.addEventListener("pointerdown", preventButton, false);
 
-      undoButton.addEventListener("mousedown", undoText, false);
-      undoButton.addEventListener("touchstart", undoText, false);
-      redoButton.addEventListener("mousedown", redoText, false);
-      redoButton.addEventListener("touchstart", redoText, false);
-      copyButton.addEventListener("mousedown", copyText, false);
-      copyButton.addEventListener("touchstart", copyText, false);
-      pasteButton.addEventListener("mousedown", pasteText, false);
-      pasteButton.addEventListener("touchstart", pasteText, false);
-      function undoText(e) {
-        e.preventDefault();
-        undoManager.undo()
-        return false;
-      }
 
-      function redoText(e) {
-        e.preventDefault();
+      undoButton.addEventListener("click", event => {
         undoManager.redo()
         return false;
-      }
-      function copyText(e) {
-        e.preventDefault();
+      }, false);
+      redoButton.addEventListener("click", event =>{
+        undoManager.undo()
+        return false;
+      }, false);
+      copyButton.addEventListener("click", event => {
         if (mathField.__controller.cursor.selection) {
-          copyField = document.getElementById('copyField');
-          copyField.value = mathField.__controller.cursor.selection.join('latex');
-          copyField.select(); 
-          copyField.setSelectionRange(0,99999);
-          document.execCommand('copy');
-          navigator.clipboard.writeText(copyField.value);
+          const textToCopy = mathField.__controller.cursor.selection.join('latex');
+          navigator.clipboard.writeText(`${textToCopy}`);
           mathField.focus();
         }
-        return false;
-      }
-      function pasteText(e) {
-        e.preventDefault()
-
+      }, false);
+      pasteButton.addEventListener("click", async clickEvent => {
         navigator.clipboard.readText().then(text => {
           const transfer = new window.DataTransfer();
           transfer.setData('text/plain', text);
@@ -49,8 +35,11 @@
 
         });
         return false;
+      }, false);
+      function preventButton(event) {
+        event.preventDefault();
+        return false
       }
-
 
       function TouchEventMapper(originalEvent) {
         let Target = originalEvent.target
@@ -108,10 +97,10 @@
           metaKey: originalEvent.metaKey
         })
 
-        this.dispatchEvent(simulatedEvent);
+        this.dispatchEvent(simulatedEvent)
       }
 
-      document.querySelector('#math-field').addEventListener("touchstart", TouchEventMapper, true);
-      document.addEventListener("touchmove", TouchEventMapper, true);
-      document.addEventListener("touchend", TouchEventMapper, true);
-      document.addEventListener("touchcancel", TouchEventMapper, true);
+      document.querySelector('#math-field').addEventListener("touchstart", TouchEventMapper, true)
+      document.addEventListener("touchmove", TouchEventMapper, true)
+      document.addEventListener("touchend", TouchEventMapper, true)
+      document.addEventListener("touchcancel", TouchEventMapper, true)
