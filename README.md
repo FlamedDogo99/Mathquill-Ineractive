@@ -24,8 +24,8 @@
    - Pressing <kbd>return</kbd> will enter a new line, which is represented by latex's `\newline` character
 ## Credit
 - [Mathquill](https://github.com/mathquill/mathquill)
-- [Undo History](https://github.com/mathquill/mathquill/issues/5)
-- [Multiline](https://edu-mat.sakuraweb.com/matheditor/MathQuillWithLineBreaks.html)
+- [String Difference](https://github.com/google/diff-match-patch)
+- [Multiline Mathquill](https://edu-mat.sakuraweb.com/matheditor/MathQuillWithLineBreaks.html)
 - [Latex Edit Binding](https://digabi.github.io/mathquill/test/demo.html)
 - [Original (obsolete) Learnosity matrix branch](https://github.com/Learnosity/mathquill/tree/matrix-minimal)
 - [My rewrite of the Learnosity matrix branch](https://github.com/FlamedDogo99/mathquill)

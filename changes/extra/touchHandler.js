@@ -9,11 +9,11 @@
 
 
       undoButton.addEventListener("click", event => {
-        undoManager.redo()
+        undoInput();
         return false;
       }, false);
       redoButton.addEventListener("click", event =>{
-        undoManager.undo()
+        redoInput();
         return false;
       }, false);
       copyButton.addEventListener("click", event => {
