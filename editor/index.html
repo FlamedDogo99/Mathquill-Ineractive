@@ -10,8 +10,14 @@
 
   <title>Mathquill Editor</title>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
   <script src="js/mathquill.min.js"></script>
   <link href="css/mathquill.css" rel="stylesheet">
+  <script
+  data-label="Check out the repository!"
+  data-href="https://github.com/FlamedDogo99/Mathquill-Ineractive"
+  src="https://unpkg.com/github-corners/dist/embed.min.js"
+></script>
   <style>
     @media print {
       .printDisable {
@@ -21,19 +27,98 @@
         border: 0px !important;
       }
     }
+    body {
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+      padding: 0.3125em;
+    }
+    h2 {
+      margin-block-start: 0.3125em;
+      margin-block-end: 0.3125em;
+    }
+    .editor, .toolbar, .mathFieldDiv {
+      padding-bottom: 0.3125em;
+    }
+    .toolbarButton {
+      appearance: none;
+      background-color: #FAFBFC;
+      border: 1px solid rgba(27, 31, 35, 0.15);
+      border-radius: 0.375em;
+      box-shadow: rgba(27, 31, 35, 0.04) 0 0.0625em 0, rgba(255, 255, 255, 0.25) 0 0.0625em 0 inset;
+      box-sizing: border-box;
+      color: #24292E;
+      cursor: pointer;
+      display: inline-block;
+      font-family: -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+      font-size: 1em;
+      font-weight: 500;
+      line-height: 1.25em;
+      list-style: none;
+      padding: 0.375em 1em;
+      position: relative;
+      transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      vertical-align: middle;
+      white-space: nowrap;
+      word-wrap: break-word;
+    }
+
+    .toolbarButton:hover {
+      background-color: #F3F4F6;
+      text-decoration: none;
+      transition-duration: 0.1s;
+    }
+
+    .toolbarButton:disabled {
+      background-color: #FAFBFC;
+      border-color: rgba(27, 31, 35, 0.15);
+      color: #959DA5;
+      cursor: default;
+    }
+
+    .toolbarButton:active {
+      background-color: #EDEFF2;
+      box-shadow: rgba(225, 228, 232, 0.2) 0 0.0625em 0 inset;
+      transition: none 0s;
+    }
+
+    .toolbarButton:focus {
+      outline: 0.0625em transparent;
+    }
+
+    .toolbarButton:before {
+      display: none;
+    }
+
+    .toolbarButton:-webkit-details-marker {
+      display: none;
+    }
+    #math-field, #latex-output {
+      border-radius: 0.375em;
+      field-sizing: content;
+      box-sizing: border-box;
+      color: #24292E;
+      cursor: pointer;
+    }
+
   </style>
 </head>
 <body>
-  <p class="printDisable">Mathquill:</p>
-  <a class="printDisable" id="undo" href="#">Undo</a>
-  <a class="printDisable" id="redo" href="#">Redo</a>
-  <a class="printDisable" id="copy" href="#">Copy</a>
-  <a class="printDisable" id="paste" href="#">Paste</a>
-
-  <span id="math-field" style="margin: 0px; padding: 4px; width: 100vw;-webkit-touch-callout:none;-ms-touch-action: none;touch-action: none;"></span>
-  <div class="printDisable">
-    LaTeX Output:<br>
-    <textarea id="latex-output" style="width: 100vw; padding: 4px;"></textarea>
+  <h2>Mathquill Editor</h2>
+  <div class="toolbar">
+    <span class="printDisable toolbarButton" id="undo" href="">Undo</span>
+    <span class="printDisable toolbarButton" id="redo" href="">Redo</span>
+    <span class="printDisable toolbarButton" id="copy" href="">Copy</span>
+    <span class="printDisable toolbarButton" id="paste" href="">Paste</span>
+  </div>
+  <div class="editor">
+    <div class="mathFieldDiv">
+    <span id="math-field" style="margin: 0px; padding: 0.375em; width: 100vw;-webkit-touch-callout:none;-ms-touch-action: none;touch-action: none;"></span>
+  </div>
+  <div class="latexFieldDiv printDisable">
+    <textarea id="latex-output" style="width: 100vw; padding: 0.375em;"></textarea>
+  </div>
   </div>
   <script src="js/extension.min.js"></script>
 </body>
