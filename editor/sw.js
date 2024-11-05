@@ -21,13 +21,14 @@ self.addEventListener("fetch", (e) => {
       try {
        console.log(`[Service Worker] Attempting live fetch: ${e.request.url}`);
        const response = await fetch(e.request);
+       e.request.url.search = ''
        const cache = await caches.open(KEY);
        console.log(`[Service Worker] Caching new resource: ${e.request.url}`);
        cache.put(e.request, response.clone());
        return response;
       } catch (err) {
         console.log(`[Service Worker] Attempting to serve resource from cache: ${e.request.url}`);
-        const r = await caches.match(e.request);
+        const r = await caches.match(e.request, {'ignoreSearch' : true});
         if (r) {
           return r;
         }
