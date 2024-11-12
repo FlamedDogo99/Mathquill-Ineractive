@@ -667,6 +667,12 @@ h2 {
 .toolbarButton:-webkit-details-marker {
   display: none;
 }
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3125em;
+}
+
 #math-field, #latex-output {
   border-radius: 0.375em;
   field-sizing: content;
@@ -675,7 +681,6 @@ h2 {
   background-color: var(--bgColor);
   border-color: var(--borderColor);
   cursor: pointer;
-
 }
 #latex-output:focus-visible {
   outline: 1px solid #0969da ;
