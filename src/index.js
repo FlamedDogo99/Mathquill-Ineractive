@@ -54,7 +54,7 @@ for(const button of toolbarButtons) {
 }
 const undoInput = () => {
   const previousString = undoHandler.undo(inputField.value);
-  if(previousString) {
+  if(previousString !== null) {
     inputField.value = previousString;
     mathField.latex(previousString.replace(/\\newline/g, '\\embed{linebreak}'));
   }
@@ -62,7 +62,7 @@ const undoInput = () => {
 
 const redoInput = () => {
   const nextString = undoHandler.redo(inputField.value);
-  if(nextString) {
+  if(nextString !== null) {
     inputField.value = nextString
     mathField.latex(nextString.replace(/\\newline/g, '\\embed{linebreak}'));
   }

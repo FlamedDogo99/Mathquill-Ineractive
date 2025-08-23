@@ -1,5 +1,5 @@
-import {diff} from "diff-match-patch-es/dist/index.mjs"
-
+import {diff_match_patch} from "./DiffMatchPatch.js"
+const diff = new diff_match_patch()
 export class UndoHandler {
   constructor() {
     this.inputHistory = {
@@ -7,6 +7,8 @@ export class UndoHandler {
       1: "",
       2: []
     }
+    window.inputHistory = this.inputHistory;
+
   }
 
   undo(currentString) {
@@ -18,7 +20,7 @@ export class UndoHandler {
       this.inputHistory[0] -= 1;
       return previousString;
     }
-    return false;
+    return null;
   }
   redo(currentValue) {
     const stateIndex = this.inputHistory[0];
@@ -31,7 +33,7 @@ export class UndoHandler {
       this.inputHistory[0] += 1
       return nextString;
     }
-    return false;
+    return null;
   }
 
   translate(differences) { // Turns differences provided by Google's diff check algorithm into instructions on how to construct the string
@@ -60,7 +62,7 @@ export class UndoHandler {
     const previousState = this.inputHistory[1];
     const inputChanged = (previousState !== currentState)
     if (inputChanged) { // We want to check this because we are using a mutation observer to catch changes made programatically, could be dispatched twice
-      const differences = diff(previousState, currentState); // Get a list of insertions, deletions and no-action's
+      const differences = diff.diff_main(previousState, currentState); // Get a list of insertions, deletions and no-action's
       const translatedDifferences = this.translate(differences); // Translate the differences into instructions on how to build the changes
       const historyLength = this.inputHistory[2].length
       const stateIndex = this.inputHistory[0];
