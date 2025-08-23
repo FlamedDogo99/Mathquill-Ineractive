@@ -1,12 +1,15 @@
 export const observeElement = (element, property, callback, delay = 0) => {
   let elementPrototype = Object.getPrototypeOf(element);
   if (elementPrototype.hasOwnProperty(property)) {
-    let descriptor = Object.getOwnPropertyDescriptor(elementPrototype, property);
+    let descriptor = Object.getOwnPropertyDescriptor(
+      elementPrototype,
+      property,
+    );
     Object.defineProperty(element, property, {
-      get: function() {
+      get: function () {
         return descriptor.get.apply(this, arguments);
       },
-      set: function() {
+      set: function () {
         let oldValue = this[property];
         descriptor.set.apply(this, arguments);
         let newValue = this[property];
@@ -14,7 +17,7 @@ export const observeElement = (element, property, callback, delay = 0) => {
           setTimeout(callback.bind(this, oldValue, newValue), delay);
         }
         return newValue;
-      }
+      },
     });
   }
-}
+};

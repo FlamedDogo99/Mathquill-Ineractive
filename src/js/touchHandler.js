@@ -2,38 +2,38 @@ export const handleTouches = (originalEvent) => {
   let simulatedEventType = "";
   switch (originalEvent.type) {
     case "touchstart":
-      simulatedEventType = "mousedown"
-      break
+      simulatedEventType = "mousedown";
+      break;
     case "touchmove":
-      simulatedEventType = "mousemove"
-      break
+      simulatedEventType = "mousemove";
+      break;
     case "touchend":
-      simulatedEventType = "mouseup"
-      break
+      simulatedEventType = "mouseup";
+      break;
     case "touchcancel":
-      simulatedEventType = "mouseup"
-      break
+      simulatedEventType = "mouseup";
+      break;
     default:
-      return
+      return;
   }
 
-  let firstTouch = originalEvent.changedTouches[0]
+  let firstTouch = originalEvent.changedTouches[0];
 
   let clientX = firstTouch.clientX,
     pageX = firstTouch.pageX,
-    PageXOffset = window.scrollX || window.pageXOffset
+    PageXOffset = window.scrollX || window.pageXOffset;
   let clientY = firstTouch.clientY,
     pageY = firstTouch.pageY,
-    PageYOffset = window.scrollY || window.pageYOffset
+    PageYOffset = window.scrollY || window.pageYOffset;
   if (
     (pageX === 0 && Math.floor(clientX) > Math.floor(pageX)) ||
     (pageY === 0 && Math.floor(clientY) > Math.floor(pageY))
   ) {
-    clientX -= PageXOffset
-    clientY -= PageYOffset
+    clientX -= PageXOffset;
+    clientY -= PageYOffset;
   } else if (clientX < pageX - PageXOffset || clientY < pageY - PageYOffset) {
-    clientX = pageX - PageXOffset
-    clientY = pageY - PageYOffset
+    clientX = pageX - PageXOffset;
+    clientY = pageY - PageYOffset;
   }
 
   const simulatedEvent = new MouseEvent(simulatedEventType, {
@@ -50,7 +50,7 @@ export const handleTouches = (originalEvent) => {
     ctrlKey: originalEvent.ctrlKey,
     shiftKey: originalEvent.shiftKey,
     altKey: originalEvent.altKey,
-    metaKey: originalEvent.metaKey
-  })
-  simulatedEvent.dispatchEvent(simulatedEvent)
-}
+    metaKey: originalEvent.metaKey,
+  });
+  simulatedEvent.dispatchEvent(simulatedEvent);
+};
