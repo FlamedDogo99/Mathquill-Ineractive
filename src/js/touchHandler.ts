@@ -1,4 +1,4 @@
-export const handleTouches = (originalEvent) => {
+export const handleTouches = (originalEvent: TouchEvent) => {
   let simulatedEventType = "";
   switch (originalEvent.type) {
     case "touchstart":
@@ -17,7 +17,7 @@ export const handleTouches = (originalEvent) => {
       return;
   }
 
-  let firstTouch = originalEvent.changedTouches[0];
+  let firstTouch = originalEvent.changedTouches[0] as Touch;
 
   let clientX = firstTouch.clientX,
     pageX = firstTouch.pageX,
@@ -36,6 +36,7 @@ export const handleTouches = (originalEvent) => {
     clientY = pageY - PageYOffset;
   }
 
+
   const simulatedEvent = new MouseEvent(simulatedEventType, {
     bubbles: true,
     cancelable: true,
@@ -43,8 +44,6 @@ export const handleTouches = (originalEvent) => {
     screenY: firstTouch.screenY,
     clientX: clientX,
     clientY: clientY,
-    pageX: firstTouch.pageX,
-    pageY: firstTouch.pageY,
     buttons: 1,
     button: 0,
     ctrlKey: originalEvent.ctrlKey,
@@ -52,5 +51,9 @@ export const handleTouches = (originalEvent) => {
     altKey: originalEvent.altKey,
     metaKey: originalEvent.metaKey,
   });
-  simulatedEvent.dispatchEvent(simulatedEvent);
+  if(originalEvent.target) {
+      originalEvent.target.dispatchEvent(simulatedEvent);
+  } else {
+      window.dispatchEvent(simulatedEvent)
+  }
 };

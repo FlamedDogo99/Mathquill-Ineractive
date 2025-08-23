@@ -1,7 +1,13 @@
-import { MathQuill } from "mathquill/build/mathquill.min";
+import {MathQuill} from "mathquill/build/mathquill.min";
+import type {v3, Cursor, MQNode} from "../types/mathquill"
 
-const mathFieldElement = document.getElementById("math-field");
-const MQ = MathQuill.getInterface(2);
+import $ from "jquery";
+declare let global: any;
+global.jQuery = $;
+
+const mathFieldElement = document.getElementById("math-field") as HTMLSpanElement;
+const latexOutput = document.getElementById("latex-output") as HTMLInputElement
+const MQ = MathQuill.getInterface(2) as v3.API;
 MQ.registerEmbed("linebreak", function () {
   const node = document.createElement("span");
   node.className = "mq-line-break";
@@ -25,7 +31,7 @@ export const mathField = MQ.MathField(mathFieldElement, {
     edit: function () {
       let enteredMath = mathField.latex();
       enteredMath = enteredMath.replace(/\\embed{linebreak}/g, "\\newline");
-      document.getElementById("latex-output").value = enteredMath;
+        latexOutput.value = enteredMath;
     },
   },
 });
@@ -36,7 +42,7 @@ mathFieldElement.addEventListener("keydown", function (event) {
     mathField.write("\\embed{linebreak}");
     let enteredMath = mathField.latex();
     enteredMath = enteredMath.replace(/\\embed{linebreak}/g, "\\newline");
-    document.getElementById("latex-output").value = enteredMath;
+      latexOutput.value = enteredMath;
   } else if (event.key === "ArrowUp" || event.key === "ArrowDown") {
     event.preventDefault();
     moveCursorManually(mathField, event.key === "ArrowUp" ? "up" : "down");
@@ -50,7 +56,7 @@ if (encodedLatex) {
   let decodedLatex = decodeURIComponent(encodedLatex);
   decodedLatex = decodedLatex.replace(/\\newline/g, "\\embed{linebreak}");
   mathField.latex(decodedLatex);
-  document.getElementById("latex-output").value = decodedLatex;
+    latexOutput.value = decodedLatex;
 }
 // This is a really dumb way of making our dom scroll to where we're writing
 // We are PRAYING that making the span element containing the textArea position:static doesn't break anything
@@ -71,30 +77,29 @@ function moveMathTextArea() {
   }
 }
 
-const latexSource = document.getElementById("latex-output");
-
-function mathPaste(event) {
+function mathPaste(event: ClipboardEvent) {
   event.preventDefault();
   event.stopPropagation();
-  let paste = (event.clipboardData || window.clipboardData).getData("Text");
+  // @ts-ignore
+    let paste = (event.clipboardData || window.clipboardData).getData("Text");
   paste = paste.replace(/\\newline/g, "\\embed{linebreak}");
   mathField.__controller.cursor.deleteSelection();
   mathField.write(paste);
   mathField.__controller.textarea.value = ""; // For some damn reason, this little shit stores the value of the text selection, and reappends it after we paste it. We don't want that
   let enteredMath = mathField.latex();
   enteredMath = enteredMath.replace(/\\embed{linebreak}/g, "\\newline");
-  document.getElementById("latex-output").value = enteredMath;
+  latexOutput.value = enteredMath;
 }
 
 function sourceHandler() {
-  let updatedText = this.value;
+  let updatedText = latexOutput.value;
   if (updatedText) {
     mathField.latex(updatedText.replace(/\\newline/g, "\\embed{linebreak}"));
   }
 }
-latexSource.addEventListener("input", sourceHandler, false);
+latexOutput.addEventListener("input", sourceHandler, false);
 
-function moveCursorManually(mathField, direction) {
+function moveCursorManually(mathField: v3.EditableMathQuill, direction: string) {
   const cursor = mathField.__controller.cursor;
 
   let currentLine = getCurrentLine(cursor);
@@ -113,7 +118,7 @@ function moveCursorManually(mathField, direction) {
   }
 }
 
-function getCurrentLine(cursor) {
+function getCurrentLine(cursor: Cursor): number {
   let line = 0;
   let node = cursor[MQ.L];
   while (node) {
@@ -125,7 +130,7 @@ function getCurrentLine(cursor) {
   return line;
 }
 
-function getCursorPosInLine(cursor) {
+function getCursorPosInLine(cursor: Cursor) {
   let pos = 0;
   let node = cursor[MQ.L];
   while (node) {
@@ -138,7 +143,7 @@ function getCursorPosInLine(cursor) {
   return pos;
 }
 
-function getLineNode(cursor, currentLine, targetLine, direction) {
+function getLineNode(cursor: Cursor, currentLine: number, targetLine: number, direction: string) {
   let line = currentLine;
   if (direction === "up") {
     let node = cursor[MQ.L];
@@ -170,11 +175,11 @@ function getLineNode(cursor, currentLine, targetLine, direction) {
 }
 
 function moveToClosestPosition(
-  cursor,
-  targetLine,
-  targetNode,
-  currentPos,
-  direction,
+  cursor: Cursor,
+  targetLine: number ,
+  targetNode: MQNode,
+  currentPos: number,
+  direction: string,
 ) {
   cursor.insRightOf(targetNode);
   let pos = getCursorPosInLine(cursor);
