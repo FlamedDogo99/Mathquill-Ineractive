@@ -1,0 +1,27 @@
+name: Build and Deploy
+on:
+  push:
+    branches:
+      - dep-rewrite
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    concurrency: ci-${{github.ref}}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.18.4'
+
+      - name: Install
+        run: |
+          npm ci
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: .
+          branch: gh-pages
