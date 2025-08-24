@@ -1,4 +1,5 @@
 import "./css/main.css";
+import "./css/mathquill.css";
 import * as htmlToImage from "html-to-image";
 import { mathField } from "./js/mathQuillSetup";
 import { handleTouches } from "./js/touchHandler";

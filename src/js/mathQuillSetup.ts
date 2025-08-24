@@ -1,4 +1,4 @@
-import {MathQuill} from "mathquill/build/mathquill.min";
+import {MathQuill} from "./mathquill.min";
 import type {v3, Cursor, MQNode} from "../types/mathquill"
 
 import $ from "jquery";
