@@ -1,0 +1,1 @@
+"serviceWorker"in navigator&&navigator.serviceWorker.register("sw.js",{scope:""}).then(e=>{var r=new URL(location.href);r.search="";const o={type:"CACHE_URLS",payload:[r.toString(),...performance.getEntriesByType("resource").map(e=>e.name)]};e.installing.postMessage(o)}).catch(e=>console.log("SW registration FAIL:",e));
