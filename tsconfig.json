@@ -1,0 +1,35 @@
+{
+  // Visit https://aka.ms/tsconfig to read more about this file
+  "compilerOptions": {
+    "types": [
+      "jquery"
+    ],
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "allowJs": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "moduleResolution": "node",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "target": "es5",
+    "module": "ES2015",
+    "outDir": "dist",
+    "lib": ["ES2015", "dom", "dom.iterable"]
+  },
+  "include": [
+    "src/index.ts",
+    "src/js/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "files": [
+    "./src/index.ts"
+  ]
+}
+
