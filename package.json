@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "html-to-image": "^1.11.13",
-    "jquery": "^3.7.1",
     "terser-webpack-plugin": "^5.3.14"
   },
   "devDependencies": {

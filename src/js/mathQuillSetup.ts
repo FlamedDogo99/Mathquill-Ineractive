@@ -1,13 +1,9 @@
 import {MathQuill} from "./mathquill.min";
 import type {v3, Cursor, MQNode} from "../types/mathquill"
 
-import $ from "jquery";
-declare let global: any;
-global.jQuery = $;
-
 const mathFieldElement = document.getElementById("math-field") as HTMLSpanElement;
 const latexOutput = document.getElementById("latex-output") as HTMLInputElement
-const MQ = MathQuill.getInterface(2) as v3.API;
+const MQ = MathQuill.getInterface(3) as v3.API;
 MQ.registerEmbed("linebreak", function () {
   const node = document.createElement("span");
   node.className = "mq-line-break";
